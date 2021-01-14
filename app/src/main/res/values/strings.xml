@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">WhatsAppClone</string>
+    <!-- Change the following strings as required -->
+    <string name="app_name">Back4AppExample</string>
+    <string name="back4app_app_id">QtPIoHc19O8zNO60wQqCHwjDeuL9a1j2pRJSv19u</string>
+    <string name="back4app_client_key">LjAPqF5p1y4ZkQhwCeAuD0Xg1zVY7Zfdktg8h8mA</string>
+    <string name="back4app_server_url" translatable="false">https://parseapi.back4app.com/</string>
+    <string name="title_activity_send_message">SendMessage</string>
+    <!-- Strings used for fragments for navigation -->
 </resources>
