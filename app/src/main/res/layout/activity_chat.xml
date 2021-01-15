@@ -8,9 +8,20 @@
     android:orientation="vertical"
     tools:context=".Chat">
 
+    <ListView
+        android:id="@+id/listViewChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.9"
+        tools:layout_editor_absoluteX="198dp"
+        tools:layout_editor_absoluteY="131dp">
+
+    </ListView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0.1"
         android:orientation="horizontal">
 
 
@@ -33,14 +44,5 @@
             android:text="Send message"
             android:textSize="10sp" />
     </LinearLayout>
-
-    <ListView
-        android:id="@+id/listViewChat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="198dp"
-        tools:layout_editor_absoluteY="131dp">
-
-    </ListView>
 
 </LinearLayout>
