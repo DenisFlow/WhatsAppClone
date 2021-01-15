@@ -27,6 +27,8 @@ public class Chat extends AppCompatActivity {
     private ArrayList<String> arrayList;
     private ArrayAdapter arrayAdapter;
     private EditText edtMessage;
+    private String nameString;
+    private ArrayList<String> objectId;
 
 
     @Override
@@ -34,21 +36,27 @@ public class Chat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        nameString = getIntent().getExtras().get("waTargetRecipient").toString();
+
+        FancyToast.makeText(Chat.this, "Now you will chatting with " + nameString, FancyToast.LENGTH_LONG, FancyToast.INFO, true).show();
+
+        edtMessage = (EditText)findViewById(R.id.editTextMessage);
+        arrayList = new ArrayList<String>();
+        objectId = new ArrayList<String>();
 
         buttonSendMessage = (Button) findViewById(R.id.buttonSendMessage);
         listChat = (ListView) findViewById(R.id.listViewChat);
         arrayAdapter = new ArrayAdapter(Chat.this, android.R.layout.simple_expandable_list_item_1, arrayList);
+        listChat.setAdapter(arrayAdapter);
 
-        edtMessage = (EditText)findViewById(R.id.editTextMessage);
-        arrayList = new ArrayList();
 
-        arrayAdapter = new ArrayAdapter(Chat.this, android.R.layout.simple_expandable_list_item_1, arrayList);
+//        arrayAdapter = new ArrayAdapter(Chat.this, android.R.layout.simple_expandable_list_item_1, arrayList);
 
         ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Chat");
 
         ArrayList<String> strCol = new ArrayList<>();
         strCol.add(ParseUser.getCurrentUser().getUsername());
-        strCol.add(getIntent().getExtras().get("waTargetRecipient").toString());
+        strCol.add(nameString);
 
         parseQuery.whereContainedIn("waSender", strCol);
         parseQuery.whereContainedIn("waTargetRecipient", strCol);
@@ -60,8 +68,12 @@ public class Chat extends AppCompatActivity {
                         arrayList.clear();
                         for (ParseObject msg : objects){
                             arrayList.add(msg.getString("waSender") + ": " + msg.getString("waMessage"));
+
+                            objectId.add(msg.getObjectId());
                         }
-                        listChat.setAdapter(arrayAdapter);
+                        listChat.deferNotifyDataSetChanged();
+
+
                     }
                 }
 
@@ -74,7 +86,7 @@ public class Chat extends AppCompatActivity {
                 if (edtMessage.getText().toString() != "") {
                     ParseObject parseObject = new ParseObject("Chat");
                     parseObject.put("waSender", ParseUser.getCurrentUser().getUsername());
-                    parseObject.put("waTargetRecipient", getIntent().getExtras().get("waTargetRecipient").toString());
+                    parseObject.put("waTargetRecipient", nameString);
                     parseObject.put("waMessage", edtMessage.getText().toString());
 
                     parseObject.saveInBackground(new SaveCallback() {
@@ -82,7 +94,7 @@ public class Chat extends AppCompatActivity {
                         public void done(ParseException e) {
                             ArrayList<String> strCol = new ArrayList<>();
                             strCol.add(ParseUser.getCurrentUser().getUsername());
-                            strCol.add(getIntent().getExtras().get("waTargetRecipient").toString());
+                            strCol.add(nameString);
 
                             parseQuery.whereContainedIn("waSender", strCol);
                             parseQuery.whereContainedIn("waTargetRecipient", strCol);
@@ -93,14 +105,16 @@ public class Chat extends AppCompatActivity {
                                         if (objects.size() > 0){
                                             boolean wasChange = false;
                                             for (ParseObject msg : objects){
-                                                if (!arrayList.contains(msg.getString("waSender") + ": " + msg.getString("waMessage"))) {
+                                                if (!objectId.contains(msg.getObjectId())) {
                                                     arrayList.add(msg.getString("waSender") + ": " + msg.getString("waMessage"));
+                                                    objectId.add(msg.getObjectId());
                                                     wasChange = true;
 
                                                 }
                                             }
                                             if (wasChange){
                                                 listChat.deferNotifyDataSetChanged();
+                                                edtMessage.setText("");
                                             }
 
                                         }
